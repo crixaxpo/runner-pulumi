@@ -3,12 +3,13 @@ FROM $BASE_IMAGE
 ARG PULUMI_VERSION
 ARG TARGETARCH
 
-RUN echo "hosts: files dns" > /etc/nsswitch.conf \
-  && adduser --disabled-password --uid=1983 spacelift
-
 USER root
 WORKDIR /home/spacelift
-RUN apt-get update && apt-get install -y wget procps
+RUN apt-get update && apt-get install -y --no-install-recommends adduser wget procps ca-certificates \
+  && rm -rf /var/lib/apt/lists/*
+
+RUN echo "hosts: files dns" > /etc/nsswitch.conf \
+  && adduser --disabled-password --gecos "" --uid=1983 spacelift
 
 RUN if [ "$TARGETARCH" = "arm64" ]; then \
     wget -q "https://get.pulumi.com/releases/sdk/pulumi-${PULUMI_VERSION}-linux-arm64.tar.gz" && \
