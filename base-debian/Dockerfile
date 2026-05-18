@@ -26,21 +26,14 @@ RUN echo "hosts: files dns" > /etc/nsswitch.conf \
   fi \
   && chown -R 1983:1983 /home/spacelift
 
+ADD https://get.pulumi.com/releases/sdk/pulumi-${PULUMI_VERSION}-linux-x64.tar.gz /tmp/pulumi-linux-amd64.tar.gz
+ADD https://get.pulumi.com/releases/sdk/pulumi-${PULUMI_VERSION}-linux-arm64.tar.gz /tmp/pulumi-linux-arm64.tar.gz
 RUN if [ "$TARGETARCH" = "arm64" ]; then \
-    PULUMI_URL="https://get.pulumi.com/releases/sdk/pulumi-${PULUMI_VERSION}-linux-arm64.tar.gz"; \
+    tar -xf /tmp/pulumi-linux-arm64.tar.gz; \
   else \
-    PULUMI_URL="https://get.pulumi.com/releases/sdk/pulumi-${PULUMI_VERSION}-linux-x64.tar.gz"; \
+    tar -xf /tmp/pulumi-linux-amd64.tar.gz; \
   fi && \
-  if command -v wget >/dev/null 2>&1; then \
-    wget -q "$PULUMI_URL"; \
-  elif command -v curl >/dev/null 2>&1; then \
-    curl -fsSL -O "$PULUMI_URL"; \
-  else \
-    echo "Neither wget nor curl is available to download Pulumi" >&2; \
-    exit 1; \
-  fi && \
-  tar -xf pulumi-${PULUMI_VERSION}-linux-*.tar.gz && \
   mv pulumi/* /usr/local/bin/ && \
-  rm -rf pulumi-${PULUMI_VERSION}*.tar.gz
+  rm -rf /tmp/pulumi-linux-*.tar.gz pulumi
 
 USER spacelift
