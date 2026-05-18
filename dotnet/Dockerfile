@@ -3,7 +3,9 @@ ARG RELEASE_VERSION
 FROM ${REPOSITORY_BASE_PATH}/runner-pulumi-base-debian:${RELEASE_VERSION}
 
 USER root
-RUN apt-get install -y icu-devtools
+RUN apt-get update -o Acquire::Retries=5 -o Acquire::http::No-Cache=true -o Acquire::http::Pipeline-Depth=0 \
+  && apt-get install -y --no-install-recommends icu-devtools \
+  && rm -rf /var/lib/apt/lists/*
 USER spacelift
 
 RUN wget -q https://dot.net/v1/dotnet-install.sh
