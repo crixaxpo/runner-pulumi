@@ -61,6 +61,7 @@ jobs:
             $CONTEXT
 
       - name: Build base fips image (Alpine or Debian)
+        if: matrix.lang == 'javascript' || matrix.lang == 'golang'
         env:
           CONTEXT: ${{ (matrix.lang == 'javascript' || matrix.lang == 'golang') && 'base-alpine' || 'base-debian' }}
         run: |
@@ -83,6 +84,7 @@ jobs:
             ${{ matrix.lang }}
 
       - name: Build main fips image
+        if: matrix.lang == 'javascript' || matrix.lang == 'golang'
         run: |
           docker build \
             --build-arg REPOSITORY_BASE_PATH=${{ env.REPOSITORY_BASE_PATH }} \
@@ -96,6 +98,7 @@ jobs:
           docker run --rm ${{ env.MAIN_IMAGE_FULL_NAME }} pulumi about    
 
       - name: Pulumi binary sanity test of the fips image
+        if: matrix.lang == 'javascript' || matrix.lang == 'golang'
         run: |
           docker run --rm ${{ env.MAIN_IMAGE_FULL_NAME }}-fips pulumi about
       
@@ -112,6 +115,7 @@ jobs:
           fi
 
       - name: ${{ matrix.lang }}-fips sanity test
+        if: matrix.lang == 'javascript' || matrix.lang == 'golang'
         run: |
           if [ "${{ matrix.lang }}" == "javascript" ]; then
             docker run --rm ${{ env.MAIN_IMAGE_FULL_NAME }}-fips node --version
