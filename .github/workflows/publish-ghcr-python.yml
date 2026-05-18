@@ -4,7 +4,7 @@ on:
   workflow_dispatch:
     inputs:
       pulumi_version:
-        description: "Pulumi version to install, for example 3.167.0"
+        description: "Pulumi version to install, for example 3.239.0 or v3.239.0"
         required: true
         type: string
       image_tag:
@@ -34,18 +34,20 @@ jobs:
       - name: Check out repository code
         uses: actions/checkout@v4
 
-      - name: Set image tag
+      - name: Set image metadata
         run: |
+          PULUMI_VERSION="${{ inputs.pulumi_version }}"
+          if [ "${PULUMI_VERSION#v}" = "$PULUMI_VERSION" ]; then
+            PULUMI_VERSION="v$PULUMI_VERSION"
+          fi
+          echo "PULUMI_VERSION=$PULUMI_VERSION" >> "$GITHUB_ENV"
+
           if [ -n "${{ inputs.image_tag }}" ]; then
             echo "IMAGE_TAG=${{ inputs.image_tag }}" >> "$GITHUB_ENV"
           else
-            echo "IMAGE_TAG=${{ inputs.pulumi_version }}" >> "$GITHUB_ENV"
+            IMAGE_TAG="${{ inputs.pulumi_version }}"
+            echo "IMAGE_TAG=${IMAGE_TAG#v}" >> "$GITHUB_ENV"
           fi
-
-      - name: Set up QEMU
-        uses: docker/setup-qemu-action@v3
-        with:
-          platforms: linux/arm64
 
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
@@ -62,9 +64,9 @@ jobs:
         with:
           context: base-debian
           push: true
-          platforms: linux/amd64,linux/arm64
+          platforms: linux/amd64
           build-args: |
-            PULUMI_VERSION=${{ inputs.pulumi_version }}
+            PULUMI_VERSION=${{ env.PULUMI_VERSION }}
           tags: |
             ${{ env.REGISTRY }}/${{ env.IMAGE_OWNER }}/runner-pulumi-base-debian:${{ env.IMAGE_TAG }}
 
@@ -73,7 +75,7 @@ jobs:
         with:
           context: python
           push: true
-          platforms: linux/amd64,linux/arm64
+          platforms: linux/amd64
           build-args: |
             REPOSITORY_BASE_PATH=${{ env.REGISTRY }}/${{ env.IMAGE_OWNER }}
             RELEASE_VERSION=${{ env.IMAGE_TAG }}
