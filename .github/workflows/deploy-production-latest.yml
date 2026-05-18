@@ -127,6 +127,7 @@ jobs:
           build-args: |
             PULUMI_VERSION=${{ env.PULUMI_VERSION }}
             BASE_IMAGE=ghcr.io/spacelift-io/debian-fips:base-latest
+            SKIP_APT_INSTALL=true
           tags: ${{ secrets.REPOSITORY_BASE_PATH }}/runner-pulumi-base-debian:${{ env.RELEASE_VERSION }}-fips
 
   javascript:
