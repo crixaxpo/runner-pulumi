@@ -5,7 +5,10 @@ ARG TARGETARCH
 
 USER root
 WORKDIR /home/spacelift
-RUN apt-get update && apt-get install -y --no-install-recommends adduser wget procps ca-certificates \
+RUN apt-get clean \
+  && rm -rf /var/lib/apt/lists/* \
+  && apt-get update -o Acquire::Retries=5 -o Acquire::http::No-Cache=true -o Acquire::http::Pipeline-Depth=0 \
+  && apt-get install -y --no-install-recommends adduser wget procps ca-certificates \
   && rm -rf /var/lib/apt/lists/*
 
 RUN echo "hosts: files dns" > /etc/nsswitch.conf \
