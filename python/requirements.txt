@@ -1,2 +1,6 @@
-pulumi>=3.0.0,<4.0.0
-pulumi-azure-native>=2.0.0,<3.0.0
+databricks-sdk==0.120.0
+msal==1.37.0
+pulumi==3.252.0
+pulumi-azure-native==2.92.2
+pulumi-databricks==1.96.0
+PyYAML==6.0.3

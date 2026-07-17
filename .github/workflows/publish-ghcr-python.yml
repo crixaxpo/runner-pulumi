@@ -66,6 +66,7 @@ jobs:
           push: true
           platforms: linux/amd64
           build-args: |
+            BASE_IMAGE=python:3.12-slim-bookworm
             PULUMI_VERSION=${{ env.PULUMI_VERSION }}
           tags: |
             ${{ env.REGISTRY }}/${{ env.IMAGE_OWNER }}/runner-pulumi-base-debian:${{ env.IMAGE_TAG }}
