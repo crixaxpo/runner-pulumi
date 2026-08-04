@@ -41,7 +41,7 @@ ARG RELEASE_VERSION
 
 - `REPOSITORY_BASE_PATH` es la ubicación del registro. En la publicación será
   `ghcr.io/crixaxpo`.
-- `RELEASE_VERSION` es la etiqueta de la imagen base, por ejemplo `3.252.0`.
+- `RELEASE_VERSION` es la etiqueta de la imagen base, por ejemplo `3.253.0`.
 
 ## Imagen base
 
@@ -96,15 +96,24 @@ COPY requirements.txt /tmp/requirements.txt
 
 Copia `python/requirements.txt` a un fichero temporal dentro de la imagen.
 
-El fichero contiene las versiones que necesita `pulumi-payen`:
+El fichero contiene la unión de versiones que necesitan `pulumi-payen` y
+`github-pulumi-automation`:
 
 ```text
+azure-appconfiguration==1.9.0
+azure-identity==1.25.3
 databricks-sdk==0.120.0
 msal==1.37.0
-pulumi==3.252.0
+pulumi==3.253.0
 pulumi-azure-native==2.92.2
-pulumi-databricks==1.96.0
+pulumi-azuread==6.10.0
+pulumi-command==1.2.1
+pulumi-databricks==1.101.0
+pulumi-github==6.14.0
+PyGithub==2.9.1
+python-dotenv==1.2.2
 PyYAML==6.0.3
+truststore==0.10.4
 ```
 
 ## Entorno virtual e instalación
